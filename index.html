@@ -18,6 +18,28 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
   <style>
+  /* header center title */
+  .topbar{max-width:1200px;margin:0 auto;border-radius:12px;padding-left:16px;padding-right:16px;min-height:64px;display:flex;align-items:center;box-sizing:border-box}
+  .hamburger{background:transparent;border:none;padding:8px;border-radius:8px;cursor:pointer}
+  .menu-panel{position:absolute;right:12px;top:56px;background:white;border-radius:10px;box-shadow:0 10px 30px rgba(2,6,23,0.12);z-index:10000;padding:8px;min-width:160px}
+  .menu-item{display:block;width:100%;text-align:left;padding:10px;border-radius:8px;border:none;background:transparent;cursor:pointer}
+  .menu-item:hover{background:#f1f5f9}
+  @media (max-width: 720px){
+  /* header mobile adjustments */
+      .topbar{padding-left:12px;padding-right:12px;top:8px}
+      body{padding-top:96px}
+      /* stack header content vertically on small screens */
+  .topbar{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:auto}
+      .controls{width:100%;display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+      .select{min-width:140px}
+      .hamburger{padding:10px;font-size:18px}
+      .menu-panel{position:fixed;right:12px;top:60px}
+    }
+  /* mobile title handled via header flow if needed */
+  /* Collapsible helpers */
+  .collapsible{overflow:hidden;transition:max-height .28s ease;padding-top:0;padding-bottom:0}
+  .collapsible.expanded{padding-top:12px;padding-bottom:12px;max-height:1200px}
+  .collapsible.collapsed{max-height:0}
     .fade-in { opacity: 0; animation: fadeIn 0.6s forwards; }
     @keyframes fadeIn { to { opacity: 1; } }
     /* Material You inspired pastel backgrounds and elevation */
@@ -57,43 +79,128 @@
       --radius-lg: 14px;
       --radius-md: 10px;
       --glass: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(246,248,250,0.8));
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: 'Lato', Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    .app-shell{max-width:1200px;margin:24px auto;padding:20px}
-    .topbar{display:flex;align-items:center;gap:16px;padding:12px;border-radius:var(--radius-lg);background:var(--glass);box-shadow:0 6px 18px var(--oneui-elev);border:1px solid rgba(34,38,43,0.04)}
-  /* Make header fixed near top (use left/right instead of translate for stability) */
-  .topbar{position:fixed;top:12px;left:12px;right:12px;max-width:1200px;margin:0 auto;border-radius:12px;z-index:9999}
-  /* content starts below the header; keep compact but safe */
-  body{padding-top:100px}
-    .brand{display:flex;align-items:center;gap:12px}
-    .brand .logo{height:40px;width:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);box-shadow:0 4px 14px rgba(37,99,235,0.18);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
-    .title{font-size:1rem;font-weight:700;color:#0f172a}
+  .app-shell{max-width:1200px;margin:6px auto;padding:16px}
+  /* ensure overlay appears above header and other controls */
+  .sections-overlay{z-index:11000}
+  /* layout alignment fixes */
+  .layout-grid{align-items:start;grid-auto-rows:min-content}
+  .sidebar{padding:0}
+  main{min-width:0}
+  .report-box{margin-bottom:18px}
+  .report-box.p-4{padding:20px}
+  /* make form inputs consistently sized and box-friendly */
+  input,textarea,select{box-sizing:border-box}
+  .report-box input,.report-box textarea{height:46px}
+  .report-box label{display:block;margin-bottom:6px}
+  /* section header alignment */
+  .report-box h3{margin:0 0 8px 0}
+  /* ensure sections pill doesn't overlap the details card */
+  .sections-pill{left:6px}
+  @media(min-width:900px){.sections-pill{left:20px}}
+  .topbar{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:var(--radius-lg);background:var(--glass);box-shadow:0 6px 18px var(--oneui-elev);border:1px solid rgba(34,38,43,0.04);position:relative}
+  /* header will scroll away with page; keep a very small top margin so content doesn't touch it */
+  .topbar{margin:2px auto;max-width:1200px;min-height:44px}
+    body{padding-top:6px}
+    .brand{display:flex;align-items:center;gap:6px}
+    .brand .logo{height:40px;width:40px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);box-shadow:0 4px 14px rgba(37,99,235,0.18);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;overflow:hidden}
+  .brand-img{height:56px;width:auto;border-radius:8px;object-fit:contain}
+  .title{font-size:1.25rem;font-weight:700;color:#0f172a;text-transform:capitalize}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand .brand-title{font-weight:800;color:#0f172a;letter-spacing:0.6px}
     .sub{font-size:12px;color:var(--muted)}
     .controls{margin-left:auto;display:flex;gap:12px;align-items:center}
     .select{background:white;border:1px solid rgba(34,38,43,0.06);padding:8px 10px;border-radius:10px;box-shadow:0 2px 8px rgba(16,24,40,0.03);min-width:180px}
     .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;box-shadow:0 6px 12px rgba(37,99,235,0.12)}
     @media (max-width:720px){.controls{flex-direction:column;align-items:flex-end}.select{min-width:140px}}
-    /* Checklist-specific styles */
-    .report-box{padding:16px}
+  /* Checklist-specific styles */
+  .report-box{padding:16px}
+  /* align section boxes with details card by ensuring consistent left/right inset */
+  main section.report-box{margin-left:0;margin-right:0}
     table th, table td{vertical-align:middle}
     .chip{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:999px;font-weight:700;font-size:11px}
+  /* Micro-interactions for chips */
+  .chip{position:relative;overflow:hidden;transition:transform .12s cubic-bezier(.2,.9,.2,1),box-shadow .12s,background .18s,color .12s}
+  .chip:active{transform:scale(.96)}
+  .chip::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;background:rgba(255,255,255,0.22);border-radius:50%;transform:translate(-50%,-50%);transition:width .32s ease,height .32s ease,opacity .24s}
+  .chip:active::after{width:200%;height:200%;opacity:1}
+  /* selected (tailwind ring applied) - give a subtle lift */
+  .chip.ring-2{box-shadow:0 8px 20px rgba(37,99,235,0.12);transform:translateY(-3px) scale(1.02)}
     .chip.yes{background:linear-gradient(90deg,#d1fae5,#bbf7d0);color:#065f46}
     .chip.no{background:linear-gradient(90deg,#fee2e2,#fecaca);color:#7f1d1d}
     .chip.na{background:linear-gradient(90deg,#fff7ed,#ffedd5);color:#713f12}
+  /* glow on click - generic and color-specific (brighter & more saturated) */
+  .chip.clicked{animation:chipGlowBase .9s ease-out;filter:saturate(1.18) brightness(1.06);transform:translateY(-2px) scale(1.03)}
+  @keyframes chipGlowBase{0%{box-shadow:0 0 0 rgba(37,99,235,0);filter:saturate(1) brightness(1)}30%{box-shadow:0 12px 36px rgba(37,99,235,0.22);filter:saturate(1.22) brightness(1.08)}100%{box-shadow:0 8px 24px rgba(37,99,235,0.12);filter:saturate(1.12) brightness(1.04)}}
+  .chip.yes.clicked{animation:chipGlowGreen .9s ease-out;filter:saturate(1.3) brightness(1.08)}
+  @keyframes chipGlowGreen{0%{box-shadow:0 0 0 rgba(16,185,129,0);filter:saturate(1) brightness(1)}30%{box-shadow:0 12px 36px rgba(16,185,129,0.28);filter:saturate(1.36) brightness(1.12)}100%{box-shadow:0 8px 24px rgba(16,185,129,0.14);filter:saturate(1.2) brightness(1.06)}}
+  .chip.no.clicked{animation:chipGlowRed .9s ease-out;filter:saturate(1.28) brightness(1.06)}
+  @keyframes chipGlowRed{0%{box-shadow:0 0 0 rgba(239,68,68,0);filter:saturate(1) brightness(1)}30%{box-shadow:0 12px 36px rgba(239,68,68,0.28);filter:saturate(1.34) brightness(1.12)}100%{box-shadow:0 8px 24px rgba(239,68,68,0.14);filter:saturate(1.18) brightness(1.06)}}
+  .chip.na.clicked{animation:chipGlowYellow .9s ease-out;filter:saturate(1.24) brightness(1.06)}
+  @keyframes chipGlowYellow{0%{box-shadow:0 0 0 rgba(245,158,11,0);filter:saturate(1) brightness(1)}30%{box-shadow:0 12px 36px rgba(245,158,11,0.28);filter:saturate(1.3) brightness(1.12)}100%{box-shadow:0 8px 24px rgba(245,158,11,0.14);filter:saturate(1.16) brightness(1.06)}}
+  /* persistent glow when selected */
+  .chip.ring-2.yes{box-shadow:0 14px 40px rgba(16,185,129,0.28), 0 6px 18px rgba(16,185,129,0.10);filter:saturate(1.18) brightness(1.06);transform:translateY(-2px)}
+  .chip.ring-2.no{box-shadow:0 14px 40px rgba(239,68,68,0.28), 0 6px 18px rgba(239,68,68,0.10);filter:saturate(1.18) brightness(1.06);transform:translateY(-2px)}
+  .chip.ring-2.na{box-shadow:0 14px 40px rgba(245,158,11,0.28), 0 6px 18px rgba(245,158,11,0.10);filter:saturate(1.12) brightness(1.06);transform:translateY(-2px)}
     .section-title{font-size:1rem;margin-bottom:6px}
     form { width: 100%; }
     @media(min-width:1024px){
       form.max-w-2xl{max-width:1100px}
     }
-    /* responsive layout tweaks */
+  /* responsive layout tweaks */
     @media (max-width: 900px){
       .layout-grid{grid-template-columns:1fr !important}
       .sidebar{position:relative;top:auto}
       .controls{flex-wrap:wrap;gap:8px}
       .select{min-width:120px}
     }
+    /* Align sections pill with centered content on wide screens */
+    @media (min-width:1200px){
+      .sections-pill{left:calc((100% - 1200px)/2 + 12px)}
+    }
+
+  /* Report box micro-interactions and entrance animation */
+  .report-box{transition:transform .22s cubic-bezier(.2,.9,.2,1),box-shadow .22s,opacity .3,background .18s;will-change:transform,opacity}
+  .report-box:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(2,6,23,0.06)}
+  /* initial state for sections: subtle rise and fade-in */
+  [id$="-section"]{opacity:0;transform:translateY(8px);transition:transform .45s cubic-bezier(.2,.9,.2,1),opacity .45s}
+  [id$="-section"].in-view{opacity:1;transform:translateY(0)}
+
+  /* Sidebar button hover */
+  .sidebar button{transition:transform .12s,box-shadow .12s}
+  .sidebar button:hover{transform:translateX(4px)}
+    /* Left-side sections pill (collapsed state) - smaller and tighter */
+    .sections-pill{position:fixed;left:8px;top:50%;transform:translateY(-50%);background:var(--accent);color:white;padding:6px 8px;font-size:13px;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(2,6,23,0.10);z-index:9999;display:flex;align-items:center;gap:8px;min-height:36px}
+    .sections-pill .label{font-weight:700;white-space:nowrap;max-width:90px;overflow:hidden;text-overflow:ellipsis}
+    .sections-pill .chev{opacity:0.95;font-size:12px}
+    @media (max-width:720px){
+      .sections-pill{left:12px;bottom:18px;top:auto;transform:none;padding:8px 10px;font-size:14px}
+    }
+  /* Overlay card when pill is opened - frosted glass, overlaps content without reflowing layout */
+  .sections-overlay{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,420px);max-height:82vh;overflow:auto;border-radius:14px;padding:12px;z-index:10050;backdrop-filter:blur(10px) saturate(120%);-webkit-backdrop-filter:blur(10px) saturate(120%);background:rgba(255,255,255,0.64);border:1px solid rgba(255,255,255,0.36);box-shadow:0 20px 50px rgba(2,6,23,0.12)}
+  /* balloon pop animation */
+  .sections-overlay{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,420px);max-height:82vh;overflow:auto;border-radius:14px;padding:12px;z-index:10050;backdrop-filter:blur(10px) saturate(120%);-webkit-backdrop-filter:blur(10px) saturate(120%);background:rgba(255,255,255,0.64);border:1px solid rgba(255,255,255,0.36);box-shadow:0 20px 50px rgba(2,6,23,0.12);transform-origin:center center}
+  .sections-overlay.pop-enter{animation:popIn .36s cubic-bezier(.2,.9,.2,1) forwards}
+  .sections-overlay.pop-exit{animation:popOut .28s cubic-bezier(.3,.9,.2,1) forwards}
+  @keyframes popIn{0%{opacity:0;transform:scale(.2) translate(-50%,-50%)}60%{transform:scale(1.06) translate(-50%,-50%)}100%{opacity:1;transform:scale(1) translate(-50%,-50%)}}
+  @keyframes popOut{0%{opacity:1;transform:scale(1) translate(-50%,-50%)}100%{opacity:0;transform:scale(.24) translate(-50%,-50%)}}
+  .sections-overlay .report-box{background:transparent;border:none;box-shadow:none;padding:6px}
+  .sections-overlay .collapse-btn{position:absolute;right:10px;top:8px}
+
+  /* Sidebar nav button alignment: make label and count align evenly */
+  .sidebar nav button{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:10px}
+  .sidebar nav button .font-semibold{line-height:1.05}
+  .sidebar nav button .text-xs{opacity:0.8}
+
+  /* Tighten report-box form spacing so inputs align in a compact grid */
+  .report-box.p-4{padding:12px}
+  .report-box input, .report-box select, .report-box textarea{height:44px}
+    /* sidebar close control */
+    .sidebar .collapse-btn{position:absolute;right:10px;top:10px;background:transparent;border:none;padding:6px;border-radius:8px;cursor:pointer}
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
   <div id="root" style="display:none"></div>
@@ -375,8 +482,9 @@
       const [participantName, setParticipantName] = useState(safeLS.get('participantName') || '');
       const [participantEmpID, setParticipantEmpID] = useState(safeLS.get('participantEmpID') || '');
       const [storeName, setStoreName] = useState(safeLS.get('storeName') || '');
-      const [storeID, setStoreID] = useState(safeLS.get('storeID') || '');
-      const [coffeeMachineName, setCoffeeMachineName] = useState(safeLS.get('coffeeMachineName') || '');
+  const [storeID, setStoreID] = useState(safeLS.get('storeID') || '');
+  const [sheetEndpoint, setSheetEndpoint] = useState(safeLS.get('sheetEndpoint') || '');
+  // coffeeMachineName removed per request
       const [imgs,setImgs]=useState(()=>JSON.parse(safeLS.get('imgs')||'{}'));
       const [remarks, setRemarks] = useState(() => JSON.parse(safeLS.get('remarks') || '{}')); // REMARKS
       const [downloading,setDownloading]=useState(false);
@@ -384,8 +492,17 @@
       const [showPopup, setShowPopup] = useState(false);
       // New top-level UI state
   const [scoresheetType, setScoresheetType] = useState(safeLS.get('scoresheetType') || 'technical');
+  // default landing is Manual Machine Technical
   const [machineType, setMachineType] = useState(safeLS.get('machineType') || 'manual');
+  // top-right menu state
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('Score Sheet');
   const [activeSection, setActiveSection] = useState(SECTIONS[0].id);
+  // Collapsible UI state
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // overlay state for pill -> opens frosted glass card that overlaps content (does not reflow layout)
+  const [overlayOpen, setOverlayOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(true);
 
       // Helper to pick the active sections list based on selections
       const getActiveSections = () => {
@@ -406,10 +523,11 @@
         safeLS.set('participantEmpID',participantEmpID);
         safeLS.set('storeName',storeName);
         safeLS.set('storeID',storeID);
-        safeLS.set('coffeeMachineName',coffeeMachineName);
+      safeLS.set('sheetEndpoint', sheetEndpoint);
+  // coffeeMachineName persistence removed
         safeLS.set('imgs',JSON.stringify(imgs));
         safeLS.set('remarks', JSON.stringify(remarks)); // REMARKS
-  },[resp,participantName,participantEmpID,storeName,storeID,coffeeMachineName,imgs,remarks]); // REMARKS
+  },[resp,participantName,participantEmpID,storeName,storeID,imgs,remarks]); // REMARKS
 
   // persist sheet/machine selection
   useEffect(()=>{ safeLS.set('scoresheetType', scoresheetType); },[scoresheetType]);
@@ -452,7 +570,7 @@
         if (!participantEmpID.trim()) missing.push({ type: 'field', id: 'participantEmpID', label: 'Participant Emp. ID' });
         if (!storeName.trim()) missing.push({ type: 'field', id: 'storeName', label: 'Store Name' });
         if (!storeID.trim()) missing.push({ type: 'field', id: 'storeID', label: 'Store ID' });
-        if (!coffeeMachineName.trim()) missing.push({ type: 'field', id: 'coffeeMachineName', label: 'Name of Coffee Machine' });
+  // coffeeMachineName validation removed
         // Make at least one Grooming & Hygiene image mandatory if the active sections include it
         const activeSecs = getActiveSections();
         if (activeSecs.find(s=>s.id==='GroomingHygiene') && !(imgs['GroomingHygiene'] && imgs['GroomingHygiene'].length > 0)) {
@@ -555,9 +673,11 @@
               participantEmpID,
               judgeName,
               judgeId,
+              scoresheetType,
+              machineType,
               storeName,
               storeID,
-              coffeeMachineName,
+              // coffeeMachineName removed
               totalScore: total,
               maxScore: max,
               percent: pct,
@@ -582,6 +702,28 @@
         try {
           await fetch(LOG_ENDPOINT, { method: "POST", body: data });
         } catch {}
+        // Also POST to Google Sheets webhook if provided
+        if(sheetEndpoint && sheetEndpoint.startsWith('http')){
+          try{
+            const body = {
+              participantName,
+              participantEmpID,
+              judgeName,
+              judgeId,
+              scoresheetType,
+              machineType,
+              storeName,
+              storeID,
+              totalScore: total,
+              maxScore: max,
+              percent: pct,
+              time: completion,
+              sectionScores,
+              remarks
+            };
+            fetch(sheetEndpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+          }catch(e){}
+        }
         safeVibrate(100);
         
         // PDF Generation
@@ -596,14 +738,16 @@
         doc.setFontSize(12);
         doc.setFont('helvetica','normal');
         doc.setTextColor("#24272e");
-        doc.text(`Participant Name: ${participantName}`, 10, 25);
-        doc.text(`Participant Emp. ID: ${participantEmpID}`, 10, 30);
-        doc.text(`Judge Name: ${judgeName}`, 10, 35);
-        doc.text(`Judge ID: ${judgeId}`, 10, 40);
-        doc.text(`Date/Time: ${completion}`, 10, 45);
-        doc.text(`Machine Name: ${coffeeMachineName}`, 10, 50);
-        doc.text(`Store Name: ${storeName}`, 10, 55);
-        doc.text(`Store ID: ${storeID}`, 10, 60);
+    doc.text(`Participant Name: ${participantName}`, 10, 25);
+    doc.text(`Participant Emp. ID: ${participantEmpID}`, 10, 30);
+    doc.text(`Judge Name: ${judgeName}`, 10, 35);
+    doc.text(`Judge ID: ${judgeId}`, 10, 40);
+    doc.text(`Scoresheet Type: ${scoresheetType}`, 10, 45);
+    doc.text(`Machine Type: ${machineType}`, 10, 50);
+    doc.text(`Date/Time: ${completion}`, 10, 56);
+  // Machine Name removed from PDF header
+    doc.text(`Store Name: ${storeName}`, 10, 66);
+    doc.text(`Store ID: ${storeID}`, 10, 71);
         // Dial-In and Milk-Based Times
 let y = 67;
 doc.setFont('helvetica','bold');
@@ -771,7 +915,7 @@ y += 8;
         setParticipantEmpID('');
         setStoreName('');
         setStoreID('');
-        setCoffeeMachineName('');
+  // coffeeMachineName reset removed
         setImgs({});
         setRemarks({}); // REMARKS
         safeVibrate([200,200]);
@@ -785,6 +929,21 @@ y += 8;
         if(!ids.includes(activeSection)) setActiveSection(visibleSections[0]?.id || '');
       },[scoresheetType,machineType]);
 
+      // Initialize collapsible defaults for small screens
+      useEffect(()=>{
+        try{
+          const small = window.innerWidth <= 720;
+          // keep details visible on small screens to avoid hiding the second box
+          if(small){ setSidebarOpen(false); setDetailsOpen(true); }
+          else { setSidebarOpen(true); setDetailsOpen(true); }
+          // Ensure checklist (first section) is visible on load
+          setTimeout(()=>{
+            const first = visibleSections[0]?.id;
+            if(first){ setActiveSection(first); const el=document.getElementById(`${first}-section`); if(el) el.scrollIntoView({behavior:'auto', block:'center'}); }
+          }, 120);
+        }catch(e){}
+      },[]);
+
       // Navigation helper: set active and scroll into view
       const handleNav = (id) => {
         setActiveSection(id);
@@ -794,11 +953,105 @@ y += 8;
         }, 50);
       };
 
+      // Close overlay on Escape and clicking outside
+      useEffect(()=>{
+        if(!overlayOpen) return;
+        const onKey = (e)=>{ if(e.key === 'Escape') setOverlayOpen(false); };
+        const onClick = (ev)=>{
+          // if click occurs outside the overlay content, close it
+          const overlay = document.querySelector('.sections-overlay');
+          if(overlay && !overlay.contains(ev.target)) setOverlayOpen(false);
+        };
+        document.addEventListener('keydown', onKey);
+        document.addEventListener('pointerdown', onClick);
+        return ()=>{ document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', onClick); };
+      },[overlayOpen]);
+
+      // Balloon pop: compute transform-origin from pill position and toggle animation classes
+      useEffect(()=>{
+        const overlay = document.getElementById('sections-overlay');
+        const pill = document.getElementById('sections-pill');
+        if(!overlay || !pill) return;
+        const pillRect = pill.getBoundingClientRect();
+        const overlayRect = overlay.getBoundingClientRect();
+        // compute origin relative to overlay's box (percent)
+        const ox = ((pillRect.left + pillRect.width/2) - overlayRect.left) / overlayRect.width * 100;
+        const oy = ((pillRect.top + pillRect.height/2) - overlayRect.top) / overlayRect.height * 100;
+        overlay.style.transformOrigin = `${ox}% ${oy}%`;
+        // add enter class
+        overlay.classList.remove('pop-exit');
+        overlay.classList.add('pop-enter');
+        return ()=>{
+          if(overlay){ overlay.classList.remove('pop-enter'); overlay.classList.add('pop-exit'); }
+        };
+      },[overlayOpen]);
+
+      // IntersectionObserver to animate sections when they enter view
+      useEffect(()=>{
+        const obs = new IntersectionObserver((entries)=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting){ e.target.classList.add('in-view'); }
+          });
+        },{threshold:0.12});
+        document.querySelectorAll('[id$="-section"]').forEach(el=>obs.observe(el));
+        return ()=>obs.disconnect();
+      },[visibleSections]);
+
+      // Chip click helper: add transient class to animate ripple (works with CSS ::after)
+      const chipClick = (e) => {
+        const el = e.currentTarget;
+        el.classList.add('clicked');
+        setTimeout(()=>el.classList.remove('clicked'), 350);
+      };
+
       // Ensure scrolling when activeSection changes programmatically
       useEffect(()=>{
         const el = document.getElementById(`${activeSection}-section`);
         if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
       },[activeSection]);
+
+      // Auto-fill for testing: populate fields, images and random responses then submit
+      const autoFillAndSubmit = () => {
+        // placeholder 1x1 PNG
+        const placeholderImg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
+        // fill participant details if empty
+        if(!participantName) setParticipantName('Test Participant');
+        if(!participantEmpID) setParticipantEmpID('TP-001');
+        if(!storeName) setStoreName('Test Store');
+        if(!storeID) setStoreID('TS-01');
+        // build random responses
+        const newResp = {...resp};
+        const opts = ['yes','no','na'];
+        const secs = getActiveSections();
+        secs.forEach(sec => {
+          sec.items.forEach(it => {
+            const key = `${sec.id}_${it.id}`;
+            // time fields -> set current time
+            const timeIds = ['DialInStartTime','DialInEndTime','StartTime','EndTime'];
+            if(timeIds.includes(it.id)){
+              newResp[key] = new Date().toLocaleTimeString('en-GB',{hour12:false});
+            } else if(it.id === 'BeverageName'){
+              newResp[key] = '2 lattes';
+            } else if(it.id === 'CupImage' || it.id === 'GroomingHygieneImage' || it.id.toLowerCase().includes('image')){
+              // skip – images handled separately
+            } else {
+              // random yes/no/na
+              newResp[key] = opts[Math.floor(Math.random()*opts.length)];
+            }
+          });
+        });
+        // images: ensure grooming and endtime have at least one image
+        const newImgs = {...imgs};
+        const hasG = newImgs['GroomingHygiene'] && newImgs['GroomingHygiene'].length>0;
+        const hasE = newImgs['EndTime'] && newImgs['EndTime'].length>0;
+        if(!hasG) newImgs['GroomingHygiene'] = [placeholderImg];
+        if(!hasE) newImgs['EndTime'] = [placeholderImg];
+        // apply
+        setResp(newResp);
+        setImgs(newImgs);
+        // small delay to let states propagate then submit
+        setTimeout(()=>{ handleSubmit({preventDefault:()=>{}}); }, 250);
+      };
 
       return (
         <div className="app-shell">
@@ -808,34 +1061,20 @@ y += 8;
             </div>
           )}
 
-          <header className="topbar" role="banner">
-            <div className="brand">
-              <div className="logo">BW</div>
-              <div>
-                <div className="title">Brew League — Score Sheet</div>
-                <div className="sub">Audit checklist for training at Third Wave Coffee</div>
-              </div>
+          <div className="topbar" role="banner" style={{padding:'12px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div className="brand" style={{display:'flex',alignItems:'center',gap:12}}>
+              <img src="./brew-league-logo.png" alt="Brew League" className="brand-img" />
+              <div className="brand-title">Score sheet | AM level</div>
             </div>
-            <div className="controls" role="region" aria-label="Controls">
-              <label className="sub" htmlFor="scoresheetType">Scoresheet</label>
-              <select id="scoresheetType" className="select" value={scoresheetType} onChange={e=>setScoresheetType(e.target.value)}>
-                <option value="technical">Technical Scoresheet</option>
-                <option value="sensory">Sensory Scoresheet</option>
-              </select>
-
-              <label className="sub" htmlFor="machineType">Machine</label>
-              <select id="machineType" className="select" value={machineType} onChange={e=>setMachineType(e.target.value)}>
-                <option value="manual">Manual Machine</option>
-                <option value="automatic">Automatic Machine</option>
-              </select>
-
-              <button id="exportBtn" className="btn" onClick={()=>document.querySelectorAll('[data-action="export"]').forEach(el=>el.click())}>Export</button>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              {/* header controls intentionally left empty */}
             </div>
-          </header>
+          </div>
 
-          <div style={{display:'grid',gridTemplateColumns:'260px 1fr',gap:20,marginTop:20}} className="layout-grid">
-            <aside style={{position:'sticky',top:84,alignSelf:'start'}} className="sidebar">
+          <div style={{display:'grid',gridTemplateColumns: sidebarOpen? '260px 1fr' : '1fr',gap:20,marginTop:20}} className="layout-grid">
+            <aside style={{position:'sticky',top:84,alignSelf:'start',display: sidebarOpen? 'block' : 'none'}} className="sidebar">
               <div className="report-box p-3">
+                <button className="collapse-btn" aria-label="Close sections" onClick={()=>setSidebarOpen(false)} style={{position:'absolute',right:10,top:10}}>✕</button>
                 <div className="text-sm font-semibold text-slate-700 mb-2">Sections</div>
                 <nav className="flex flex-col gap-2">
                   {visibleSections.map(sec => (
@@ -851,10 +1090,39 @@ y += 8;
               </div>
             </aside>
 
+            {/* Small floating Sections pill when sidebar is collapsed on mobile/desktop */}
+            {!sidebarOpen && (
+              <div className="sections-pill" id="sections-pill" onClick={()=>setOverlayOpen(true)} role="button" aria-label="Open Sections">
+                <div className="label">Sections</div>
+                <div className="chev">▸</div>
+              </div>
+            )}
+
+            {/* Overlay frosted card that overlaps content when pill clicked - does not affect grid/layout */}
+            {overlayOpen && (
+              <div className={`sections-overlay`} role="dialog" aria-modal="true" id="sections-overlay">
+                <div className="report-box p-3">
+                  <button className="collapse-btn" aria-label="Close sections" onClick={()=>setOverlayOpen(false)} style={{position:'absolute',right:10,top:8}}>✕</button>
+                  <div className="text-sm font-semibold text-slate-700 mb-2">Sections</div>
+                  <nav className="flex flex-col gap-2">
+                    {visibleSections.map(sec => (
+                      <button key={sec.id} onClick={()=>{ setOverlayOpen(false); handleNav(sec.id); }} className={`text-left p-3 rounded-lg ${activeSection===sec.id?'bg-blue-50 shadow-sm':'hover:bg-slate-50'}`}>
+                        <div className="font-semibold text-slate-800">{sec.title}</div>
+                        <div className="text-xs text-slate-500">{sec.items.length} items</div>
+                      </button>
+                    ))}
+                  </nav>
+                  <div className="mt-3">
+                    <button onClick={()=>{ setOverlayOpen(false); resetAll(); }} className="w-full py-2 rounded-lg bg-blue-600 text-white">New Response</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <main>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="report-box p-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className={`report-box p-4 collapsible ${detailsOpen? 'expanded':'collapsed'}`}>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     <div>
                       <label className="text-xs font-semibold text-slate-700">Judge Name</label>
                       <input id="judgeName" readOnly value={judgeName} className="w-full p-3 rounded-lg bg-white border" />
@@ -879,15 +1147,22 @@ y += 8;
                       <label className="text-xs font-semibold text-slate-700">Store ID</label>
                       <input id="storeID" value={storeID} onChange={e=>{setStoreID(e.target.value);safeLS.set('storeID',e.target.value);}} required className={`w-full p-3 rounded-lg bg-white border ${incompleteFields.some(f=>f.id==='storeID')?'ring-2 ring-red-300':''}`}/>
                     </div>
-                    <div>
-                      <label className="text-xs font-semibold text-slate-700">Coffee Machine</label>
-                      <input id="coffeeMachineName" value={coffeeMachineName} onChange={e=>{setCoffeeMachineName(e.target.value);safeLS.set('coffeeMachineName',e.target.value);}} required className={`w-full p-3 rounded-lg bg-white border ${incompleteFields.some(f=>f.id==='coffeeMachineName')?'ring-2 ring-red-300':''}`}/>
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-3">
+                      <label className="text-xs font-semibold text-slate-700">Sheets webhook (optional)</label>
+                      <input id="sheetEndpoint" value={sheetEndpoint} onChange={e=>{setSheetEndpoint(e.target.value);safeLS.set('sheetEndpoint',e.target.value);}} placeholder="https://script.google.com/macros/..." className="w-full p-3 rounded-lg bg-white border mt-1" />
                     </div>
                     <div>
                       <label className="text-xs font-semibold text-slate-700">Machine Type</label>
-                      <div className="flex gap-2 mt-1">
+                      <div className="flex gap-2 mt-1 items-center">
                         <button type="button" onClick={()=>setMachineType('manual')} className={`chip ${machineType==='manual'?'yes':''}`}>Manual</button>
                         <button type="button" onClick={()=>setMachineType('automatic')} className={`chip ${machineType==='automatic'?'yes':''}`}>Automatic</button>
+                      </div>
+                      <div className="mt-2">
+                        <label className="text-xs font-semibold text-slate-700">Scoresheet</label>
+                        <div className="flex gap-2 mt-1">
+                          <button type="button" onClick={()=>setScoresheetType('technical')} className={`chip ${scoresheetType==='technical'?'yes':''}`}>Technical</button>
+                          <button type="button" onClick={()=>setScoresheetType('sensory')} className={`chip ${scoresheetType==='sensory'?'yes':''}`}>Sensory</button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -940,7 +1215,7 @@ y += 8;
                                 {options.map(([opt])=>{
                                   const sel = resp[key]===opt;
                                   return (
-                                    <button key={opt} type="button" onClick={()=>handleOption(sec,it,opt)} className={`chip ${opt==='yes'?'yes':opt==='no'?'no':'na'} ${sel?'ring-2 ring-blue-200':''}`}>{opt.toUpperCase()}</button>
+                                    <button key={opt} type="button" onClick={(e)=>{ chipClick(e); handleOption(sec,it,opt); }} className={`chip ${opt==='yes'?'yes':opt==='no'?'no':'na'} ${sel?'ring-2 ring-blue-200':''}`}>{opt.toUpperCase()}</button>
                                   );
                                 })}
                               </div>
