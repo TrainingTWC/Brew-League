@@ -214,8 +214,12 @@
     }
     const judgeName = getParam('judgeName') || getParam('name') || '';
     const judgeId   = getParam('judgeId') || getParam('id') || '';
-    // const LOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx_6IAxc8u-hEZDfHq_e1vPGBRS1CPx5TlWzaArHf20KoGRnueFrlF-wVOdF1VDpf5S/exec';
-    const LOG_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxsV_NA25ZqYcPgONipNfaAEf11-mbYKtE3Ad3eEMi0Kv-0ccvoKwQRGoxjE3cpgNgOgw/exec';
+    // Primary logging endpoints (frontend will POST to all configured endpoints)
+    // Note: keep the original endpoint first to preserve existing behavior
+    const LOG_ENDPOINTS = [
+      'https://script.google.com/macros/s/AKfycbxsV_NA25ZqYcPgONipNfaAEf11-mbYKtE3Ad3eEMi0Kv-0ccvoKwQRGoxjE3cpgNgOgw/exec',
+      'https://script.google.com/macros/s/AKfycbxZw6jchTpDMmm2WPmE1ajO8glwzZyIpse2mtzbCWTnvrFnajlVG-Jb71nfePJE5QVxcA/exec'
+    ];
     const safeVibrate = pattern => { if(navigator?.vibrate) navigator.vibrate(pattern); };
   const safeLS = { get:k=>{try{return localStorage.getItem(k)}catch{return null}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}, clear:()=>{try{localStorage.clear()}catch{}} };
     // Checklist Data & Scoring (UPDATED)
@@ -483,7 +487,7 @@
       const [participantEmpID, setParticipantEmpID] = useState(safeLS.get('participantEmpID') || '');
       const [storeName, setStoreName] = useState(safeLS.get('storeName') || '');
   const [storeID, setStoreID] = useState(safeLS.get('storeID') || '');
-  const [sheetEndpoint, setSheetEndpoint] = useState(safeLS.get('sheetEndpoint') || '');
+  // sheetEndpoint removed from frontend per request
   // coffeeMachineName removed per request
       const [imgs,setImgs]=useState(()=>JSON.parse(safeLS.get('imgs')||'{}'));
       const [remarks, setRemarks] = useState(() => JSON.parse(safeLS.get('remarks') || '{}')); // REMARKS
@@ -517,16 +521,15 @@
         const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','EndTime'];
         return SECTIONS.filter(s => idsManual.includes(s.id));
       };
-      useEffect(()=>{
-        safeLS.set('resp',JSON.stringify(resp));
-        safeLS.set('participantName',participantName);
-        safeLS.set('participantEmpID',participantEmpID);
-        safeLS.set('storeName',storeName);
-        safeLS.set('storeID',storeID);
-      safeLS.set('sheetEndpoint', sheetEndpoint);
+  useEffect(()=>{
+    safeLS.set('resp',JSON.stringify(resp));
+    safeLS.set('participantName',participantName);
+    safeLS.set('participantEmpID',participantEmpID);
+    safeLS.set('storeName',storeName);
+    safeLS.set('storeID',storeID);
   // coffeeMachineName persistence removed
-        safeLS.set('imgs',JSON.stringify(imgs));
-        safeLS.set('remarks', JSON.stringify(remarks)); // REMARKS
+    safeLS.set('imgs',JSON.stringify(imgs));
+    safeLS.set('remarks', JSON.stringify(remarks)); // REMARKS
   },[resp,participantName,participantEmpID,storeName,storeID,imgs,remarks]); // REMARKS
 
   // persist sheet/machine selection
@@ -700,30 +703,10 @@
               submissionTime: completion
         });
         try {
-          await fetch(LOG_ENDPOINT, { method: "POST", body: data });
+          // Send the same payload to all configured endpoints. Failures are ignored to avoid blocking PDF generation.
+          await Promise.all(LOG_ENDPOINTS.map(url => fetch(url, { method: "POST", body: data })));
         } catch {}
-        // Also POST to Google Sheets webhook if provided
-        if(sheetEndpoint && sheetEndpoint.startsWith('http')){
-          try{
-            const body = {
-              participantName,
-              participantEmpID,
-              judgeName,
-              judgeId,
-              scoresheetType,
-              machineType,
-              storeName,
-              storeID,
-              totalScore: total,
-              maxScore: max,
-              percent: pct,
-              time: completion,
-              sectionScores,
-              remarks
-            };
-            fetch(sheetEndpoint, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-          }catch(e){}
-        }
+  // NOTE: Frontend webhook removed per request — configured LOG_ENDPOINTS will receive the submission (they include scoresheetType & machineType)
         safeVibrate(100);
         
         // PDF Generation
@@ -1147,10 +1130,7 @@ y += 8;
                       <label className="text-xs font-semibold text-slate-700">Store ID</label>
                       <input id="storeID" value={storeID} onChange={e=>{setStoreID(e.target.value);safeLS.set('storeID',e.target.value);}} required className={`w-full p-3 rounded-lg bg-white border ${incompleteFields.some(f=>f.id==='storeID')?'ring-2 ring-red-300':''}`}/>
                     </div>
-                    <div className="col-span-1 sm:col-span-2 lg:col-span-3">
-                      <label className="text-xs font-semibold text-slate-700">Sheets webhook (optional)</label>
-                      <input id="sheetEndpoint" value={sheetEndpoint} onChange={e=>{setSheetEndpoint(e.target.value);safeLS.set('sheetEndpoint',e.target.value);}} placeholder="https://script.google.com/macros/..." className="w-full p-3 rounded-lg bg-white border mt-1" />
-                    </div>
+                    {/* Sheets webhook removed from frontend; server-side LOG_ENDPOINT will receive scoresheetType */}
                     <div>
                       <label className="text-xs font-semibold text-slate-700">Machine Type</label>
                       <div className="flex gap-2 mt-1 items-center">
