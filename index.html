@@ -202,6 +202,65 @@
   .report-box input, .report-box select, .report-box textarea{height:44px}
     /* sidebar close control */
     .sidebar .collapse-btn{position:absolute;right:10px;top:10px;background:transparent;border:none;padding:6px;border-radius:8px;cursor:pointer}
+  /* Fix overflow for long questions (sensory sheet) in flex rows
+    - allow the question column to shrink and wrap instead of forcing the row to grow
+    - allow the control area (chips / buttons / uploads) to wrap to the next line on narrow screens
+    - keep chip buttons from stretching the question column
+  */
+  .report-box .flex-1 { min-width: 0; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 { flex-wrap: wrap; }
+  .report-box .chip { flex-shrink: 0; margin-top: 6px; }
+  /* Ensure the question/control row fully uses available width and positions controls to the right
+     without forcing horizontal scrolling. Make the chips wrap and shrink on small screens. */
+  /* Use CSS grid for the question + controls row so the question reliably takes remaining
+     space (1fr) and the controls size to content (auto). This prevents controls from
+     forcing the question to overflow. On very small screens the controls will stack below. */
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > .flex-1 { min-width: 0; }
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > .flex { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-self:end; }
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > input[type="file"],
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > button { justify-self: end; }
+  /* ensure the row doesn't exceed its parent and lets text wrap cleanly */
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
+  .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > .flex-1 { overflow: visible; }
+  /* allow chips to shrink slightly instead of forcing the row wider */
+  .chip { flex: 0 1 auto; }
+  /* hide tiny accidental horizontal overflow on the app shell to remove the scrollbar */
+  .app-shell, main { overflow-x: hidden; }
+  /* Smaller chips on very small screens to save horizontal space */
+  @media (max-width: 420px) {
+    .chip { padding: 6px 8px; font-size: 12px; }
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > .flex { gap:6px; }
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 { gap:10px; }
+  }
+  /* Stack controls under the question on narrow screens to avoid any horizontal overflow */
+  @media (max-width: 520px) {
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 { grid-template-columns: 1fr; }
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > .flex { justify-self: start; }
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > input[type="file"],
+    .report-box .p-3.bg-white.rounded-lg.flex.items-center.gap-3 > button { justify-self: start; }
+  }
+
+  /* Sensory-specific: match the technical sheet layout by giving the control column
+     a fixed max width so long question text wraps and controls cannot expand the row.
+     This mirrors the technical sheet behavior and prevents overflow on medium widths. */
+  #SensoryScore-section .p-3.bg-white.rounded-lg.flex.items-center.gap-3 {
+    grid-template-columns: 1fr 170px; /* question + control column */
+    align-items: center;
+  }
+  /* Slightly reduce chip size in the sensory section to keep alignment tidy */
+  #SensoryScore-section .chip { padding: 8px 10px; }
+  @media (max-width: 640px) {
+    #SensoryScore-section .p-3.bg-white.rounded-lg.flex.items-center.gap-3 { grid-template-columns: 1fr 140px; }
+    #SensoryScore-section .chip { padding: 6px 8px; font-size: 13px; }
+  }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
