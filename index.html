@@ -127,9 +127,13 @@
   .chip:active::after{width:200%;height:200%;opacity:1}
   /* selected (tailwind ring applied) - give a subtle lift */
   .chip.ring-2{box-shadow:0 8px 20px rgba(37,99,235,0.12);transform:translateY(-3px) scale(1.02)}
-    .chip.yes{background:linear-gradient(90deg,#d1fae5,#bbf7d0);color:#065f46}
-    .chip.no{background:linear-gradient(90deg,#fee2e2,#fecaca);color:#7f1d1d}
-    .chip.na{background:linear-gradient(90deg,#fff7ed,#ffedd5);color:#713f12}
+  .chip.yes{background:linear-gradient(90deg,#d1fae5,#bbf7d0);color:#065f46}
+  .chip.no{background:linear-gradient(90deg,#fee2e2,#fecaca);color:#7f1d1d}
+  .chip.na{background:linear-gradient(90deg,#fff7ed,#ffedd5);color:#713f12}
+  /* Strong selected state for accessibility */
+  .chip.yes.selected{background:linear-gradient(90deg,#10b981,#059669);color:white;box-shadow:0 10px 30px rgba(16,185,129,0.28);transform:translateY(-2px) scale(1.03);}
+  .chip.no.selected{background:linear-gradient(90deg,#ef4444,#dc2626);color:white;box-shadow:0 10px 30px rgba(239,68,68,0.28);transform:translateY(-2px) scale(1.03);}
+  .chip.na.selected{background:linear-gradient(90deg,#f59e0b,#d97706);color:white;box-shadow:0 10px 30px rgba(245,158,11,0.28);transform:translateY(-2px) scale(1.03);}
   /* glow on click - generic and color-specific (brighter & more saturated) */
   .chip.clicked{animation:chipGlowBase .9s ease-out;filter:saturate(1.18) brightness(1.06);transform:translateY(-2px) scale(1.03)}
   @keyframes chipGlowBase{0%{box-shadow:0 0 0 rgba(37,99,235,0);filter:saturate(1) brightness(1)}30%{box-shadow:0 12px 36px rgba(37,99,235,0.22);filter:saturate(1.22) brightness(1.08)}100%{box-shadow:0 8px 24px rgba(37,99,235,0.12);filter:saturate(1.12) brightness(1.04)}}
@@ -1182,7 +1186,7 @@ y += 8;
                                 {options.map(([opt])=>{
                                   const sel = resp[key]===opt;
                                   return (
-                                    <button key={opt} type="button" onClick={(e)=>{ chipClick(e); handleOption(sec,it,opt); }} className={`chip ${opt==='yes'?'yes':opt==='no'?'no':'na'} ${sel?'ring-2 ring-blue-200':''}`}>{opt.toUpperCase()}</button>
+                                    <button key={opt} type="button" onClick={(e)=>{ chipClick(e); handleOption(sec,it,opt); }} className={`chip ${opt==='yes'?'yes':opt==='no'?'no':'na'} ${sel? 'selected ring-2 ring-blue-200' : ''}`}>{opt.toUpperCase()}</button>
                                   );
                                 })}
                               </div>
