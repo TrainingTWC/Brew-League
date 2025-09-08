@@ -411,8 +411,8 @@
           { id: 'RightMilkAmount', q: 'Is the barista taking the right amount of milk for the intended beverage size', w: 3 },
           { id: 'FoamConsistency', q: 'Is the barista able to create the right consistency of foam for a latte/ Cappuccino/Flat white', w: 3 },
           { id: 'SteamingWiped', q: 'Steaming wand is  wiped & purged after use', w: 3 },
-          { id: 'GreenClothSteam', q: 'Did the barista use the right green cloth to wipe the steam wand', w: 3 },
-          { id: 'GreenClothStored', q: 'Did the barista store the green cloth in the GN pan after use', w: 2 }
+          { id: 'GreenClothSteam', q: 'Did the barista use the right green cloth to wipe the steam wand', w: 2 },
+          { id: 'GreenClothStored', q: 'Did the barista store the green cloth in the GN pan after use', w: 1 }
         ]
       },
       // Cup-2 Pouring
@@ -437,10 +437,9 @@
         title: 'Overall',
         items: [
           { id: 'EndTime', q: 'End time:', w: 0 },
-          { id: 'CupImage', q: 'Image of Cup 1 & 2 together', w: 0 },
-          { id: 'FoamAmount', q: 'Did the beverages presented have the right amount of foam', w: 5 },
-          { id: 'SmileInteraction', q: 'Did the barista smile and have an engaging interaction with the judge', w: 3 },
-          { id: 'CounterClean', q: 'Did the barista leave the counter clean after finishing their performance', w: 5 }
+          { id: 'MilkWastage100', q: 'Milk wastage less than 100ml', w: 3 },
+          { id: 'CounterClean', q: 'Did the barista clean the counter before completing his/ Her routine', w: 5 },
+          { id: 'CouponsRedeemed', q: "The coupons are redeemed from the participant's app", w: 0 }
         ]
       }
     ];
@@ -451,15 +450,15 @@
         id: 'SensoryScore',
         title: 'Sensory sheet',
         items: [
-          { id: 'LatteArtStd', q: 'Was the Latte art created as per TWC standard', w: 5 },
+          { id: 'LatteArtStd', q: 'Was the Latte art created as per TWC std (Cappuccino- Heart , Latte- Tulip/ Rosetta , Flat white - Single dot )', w: 5 },
           { id: 'ShinyGlossy', q: 'Was it shiny and glossy?', w: 3 },
           { id: 'NoBubbles', q: 'No visible bubbles on the surface', w: 3 },
           { id: 'ArtCentre', q: 'Is the latte art in the centre of the cup', w: 3 },
           { id: 'ContrastCrema', q: 'Is there a visible contrast between the crema and the latte art', w: 3 },
           { id: 'ArtFacing', q: 'Is the latte art facing the customer with the handle on the right side', w: 5 },
           { id: 'Cover70', q: 'Did the latte art cover 70% of the cup surface', w: 3 },
-          { id: 'FrothLevel', q: 'Was the froth level present as per TWC standard', w: 4 },
-          { id: 'CupImage', q: 'Cup 1 & 2 - Image (Both Together)', w: 5 },
+          { id: 'FrothLevel', q: 'Was the froth level present as per TWC standard (Three Swipes- cappuccino, Two Swipes- Latte & One swipe- Flatwhite)', w: 4 },
+          { id: 'CupImage', q: 'Cup 1 &  2- Image (Both Together)', w: 5 },
           { id: 'Smile', q: 'Did the barista smile and have an engaging interaction with the judge', w: 3 },
           { id: 'CounterClean', q: 'Did the barista leave the counter clean after finishing his/her performance', w: 3 }
         ]
@@ -579,15 +578,12 @@
         if (activeSecs.find(s=>s.id==='GroomingHygiene') && !(imgs['GroomingHygiene'] && imgs['GroomingHygiene'].length > 0)) {
           missing.push({ type: 'img', secId: 'GroomingHygiene', itId: 'GroomingHygieneImage', secTitle: 'Grooming & Hygiene', question: 'At least one Grooming & Hygiene image required' });
         }
-        // Make at least one Cup image mandatory if EndTime is active
-        if (activeSecs.find(s=>s.id==='EndTime') && !(imgs['EndTime'] && imgs['EndTime'].length > 0)) {
-          missing.push({ type: 'img', secId: 'EndTime', itId: 'CupImage', secTitle: 'Overall', question: 'At least one Cup image required' });
-        }
+  // No Cup image required per technical sheet
         activeSecs.forEach(sec => {
           sec.items.forEach(it => {
             const key = `${sec.id}_${it.id}`;
-            // Skip image checks here, handled above
-            if ((sec.id === 'EndTime' && it.id === 'CupImage') || (sec.id === 'GroomingHygiene' && it.id === 'GroomingHygieneImage')) {
+            // Skip image checks for grooming images (handled separately)
+            if (sec.id === 'GroomingHygiene' && it.id === 'GroomingHygieneImage') {
               return;
             }
             if (resp[key] == null) {
@@ -849,8 +845,8 @@ y += 8;
         // --- IMAGES AT END ---
         // Grooming & Hygiene Images
         const groomingImgs = imgs['GroomingHygiene'] || [];
-        const cupImgs = imgs['EndTime'] || [];
-        if (groomingImgs.length || cupImgs.length) {
+        const sensoryImgs = imgs['SensoryScore'] || [];
+        if (groomingImgs.length || sensoryImgs.length) {
           doc.addPage();
           let imgY = 20;
           // Grooming Images (left half)
@@ -867,15 +863,15 @@ y += 8;
               x += imgW + 5;
             });
           }
-          // Cup Images (right half)
-          if (cupImgs.length) {
+          // Sensory Cup Images (right half)
+          if (sensoryImgs.length) {
             doc.setFont('helvetica','bold');
             doc.setFontSize(13);
             doc.setTextColor('#263140');
-            doc.text('Cup Images', 150, imgY);
+            doc.text('Sensory Cup Images', 150, imgY);
             let x = 120, y = imgY + 5;
             let imgW = 35, imgH = 35, gapY = 8;
-            cupImgs.forEach((src, i) => {
+            sensoryImgs.forEach((src, i) => {
               if (i && i % 4 === 0) { y += imgH + gapY; x = 120; }
               doc.addImage(src, 'JPEG', x, y, imgW, imgH);
               x += imgW + 5;
@@ -1026,9 +1022,10 @@ y += 8;
         // images: ensure grooming and endtime have at least one image
         const newImgs = {...imgs};
         const hasG = newImgs['GroomingHygiene'] && newImgs['GroomingHygiene'].length>0;
-        const hasE = newImgs['EndTime'] && newImgs['EndTime'].length>0;
         if(!hasG) newImgs['GroomingHygiene'] = [placeholderImg];
-        if(!hasE) newImgs['EndTime'] = [placeholderImg];
+        // If sensory sheet is active, ensure at least one sensory cup image exists for testing
+        const hasS = newImgs['SensoryScore'] && newImgs['SensoryScore'].length>0;
+        if(getActiveSections().find(s=>s.id==='SensoryScore') && !hasS) newImgs['SensoryScore'] = [placeholderImg];
         // apply
         setResp(newResp);
         setImgs(newImgs);
@@ -1158,17 +1155,7 @@ y += 8;
                       {sec.items.map(it => {
                         const key = `${sec.id}_${it.id}`;
                         const isTimeField = ['DialInStartTime', 'DialInEndTime', 'StartTime', 'EndTime'].includes(it.id);
-                        if (sec.id === 'EndTime' && it.id === 'CupImage') {
-                          return (
-                            <div key={key} className="p-3 bg-white rounded-lg flex flex-col sm:flex-row gap-3 items-start">
-                              <div className="flex-1 font-medium text-slate-800">{it.q}</div>
-                              <div className="flex-1">
-                                <input type="file" accept="image/*" capture="environment" multiple onChange={e => addImages(sec, e)} />
-                                <div className="flex gap-2 mt-2 overflow-x-auto">{(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-20 h-20 object-cover rounded-lg"/>)}</div>
-                              </div>
-                            </div>
-                          );
-                        }
+                        // ...existing code continues
                         if (sec.id === 'MilkBasedBeverages' && it.id === 'BeverageName') {
                           return (
                             <div key={key} className="p-3 bg-white rounded-lg flex items-center gap-3">
@@ -1211,6 +1198,13 @@ y += 8;
                     {sec.id==='GroomingHygiene' && (
                       <div className="mt-3">
                         <label className="text-sm font-semibold text-slate-700">Upload Images</label>
+                        <input type="file" accept="image/*" capture="environment" multiple onChange={e=>addImages(sec,e)} className="mt-2" />
+                        <div className="flex gap-2 mt-2 overflow-x-auto">{(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-20 h-20 object-cover rounded-lg"/>)}</div>
+                      </div>
+                    )}
+                    {sec.id==='SensoryScore' && (
+                      <div className="mt-3">
+                        <label className="text-sm font-semibold text-slate-700">Upload Cup Images (Sensory)</label>
                         <input type="file" accept="image/*" capture="environment" multiple onChange={e=>addImages(sec,e)} className="mt-2" />
                         <div className="flex gap-2 mt-2 overflow-x-auto">{(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-20 h-20 object-cover rounded-lg"/>)}</div>
                       </div>
