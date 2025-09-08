@@ -1286,13 +1286,7 @@ y += 8;
                         <div className="flex gap-2 mt-2 overflow-x-auto">{(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-20 h-20 object-cover rounded-lg"/>)}</div>
                       </div>
                     )}
-                    {sec.id==='SensoryScore' && (
-                      <div className="mt-3">
-                        <label className="text-sm font-semibold text-slate-700">Upload Cup Images (Sensory)</label>
-                        <input type="file" accept="image/*" capture="environment" multiple onChange={e=>addImages(sec,e)} className="mt-2" />
-                        <div className="flex gap-2 mt-2 overflow-x-auto">{(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-20 h-20 object-cover rounded-lg"/>)}</div>
-                      </div>
-                    )}
+                    {/* Sensory cup image upload is handled inline with the CupImage item; removed duplicate chooser here */}
                   </section>
                 ))}
 
