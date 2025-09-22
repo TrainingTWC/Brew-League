@@ -280,7 +280,7 @@
     // Primary logging endpoints (frontend will POST to all configured endpoints)
     // Note: keep the original endpoint first to preserve existing behavior
     const LOG_ENDPOINTS = [
-      'https://script.google.com/macros/s/AKfycbx3bDcCGfjm7nDuHoTGOhUxDK9vGnFMwVHlRermx0-rZb4q4tn_ZGlfkVElI9J-NSbafw/exec'
+      'https://script.google.com/macros/s/AKfycbxyQNTJFO5aZqrIkHfvrLpTylF474frOFq1C6oU0qoyBX2DVNjps-ovVUCEIa9xJj_UTA/exec'
     ];
     const safeVibrate = pattern => { if(navigator?.vibrate) navigator.vibrate(pattern); };
   const safeLS = { get:k=>{try{return localStorage.getItem(k)}catch{return null}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}, clear:()=>{try{localStorage.clear()}catch{}} };
