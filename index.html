@@ -462,13 +462,54 @@
           { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
         ]
       },
+      // Cup-3
+      {
+        id: 'MilkCup3',
+        title: 'Cup-3',
+        items: [
+          { id: 'Cup3PreWarmed', q: 'Is the cup pre-warmed before extraction', w: 2 }
+        ]
+      },
+      // Cup-3 Steaming
+      {
+        id: 'Cup3Steaming',
+        title: 'Cup-3 Steaming',
+        items: [
+          { id: 'SteamingExplain', q: 'Is the barista able to explain the milk steaming process', w: 2 },
+          { id: 'CleanPitcher', q: 'Is the Barista uses a clean milk pitcher for every order', w: 2 },
+          { id: 'RightPitcher', q: 'Is the barista using the right milk pitcher for the intended beverage size', w: 3 },
+          { id: 'ColdMilk', q: 'In the barista using cold milk  stored in the chiller', w: 3 },
+          { id: 'MilkPouch', q: 'Is the milk pouch stored in the 900ml pitcher', w: 1 },
+          { id: 'RightMilkAmount', q: 'Is the barista taking the right amount of milk for the intended beverage size', w: 3 },
+          { id: 'FoamConsistency', q: 'Is the barista able to create the right consistency of foam for a latte/ Cappuccino/Flat white', w: 3 },
+          { id: 'SteamingWiped', q: 'Steaming wand is  wiped & purged after use', w: 3 },
+          { id: 'GreenClothSteam', q: 'Did the barista use the right green cloth to wipe the steam wand', w: 2 },
+          { id: 'GreenClothStored', q: 'Did the barista store the green cloth in the GN pan after use', w: 1 }
+        ]
+      },
+      // Cup-3 Pouring
+      {
+        id: 'Cup3Pouring',
+        title: 'Cup-3 Pouring',
+        items: [
+          { id: 'TapPitcher', q: 'Does the barista tap the pitcher to remove excess bubbles (if any)', w: 1 },
+          { id: 'SwirlPitcher', q: 'Did the barista swirl the pitcher to ensure the milk and foam is well mixed', w: 1 },
+          { id: 'LatteArt', q: 'Barista able to create latte art in the cup (Cappuccino- Heart , Latte- Tulip/ Rosetta , Flat white - Single dot in the centre)', w: 5 },
+          { id: 'LatteArtCenter', q: 'Is the latte art in the centre of the cup', w: 3 },
+          { id: 'ContrastCrema', q: 'is there a visible contrast between the crema and the latte art', w: 3 },
+          { id: 'LatteArtFacing', q: 'Is the latte art facing the customer with the handle on the right side', w: 3 },
+          { id: 'NoSpillage', q: 'No spillage of espresso or milk on the outer part of the cup', w: 2 },
+          { id: 'MilkWastage', q: 'Milk wastage less than 50ml', w: 3 },
+          { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
+        ]
+      },
       // End time and final questions
       {
         id: 'EndTime',
         title: 'Overall',
         items: [
           { id: 'EndTime', q: 'End time:', w: 0 },
-          { id: 'MilkWastage100', q: 'Milk wastage less than 100ml', w: 3 },
+          { id: 'MilkWastage100', q: 'Milk wastage less than 150ml', w: 3 },
           { id: 'CounterClean', q: 'Did the barista clean the counter before completing his/ Her routine', w: 5 },
           { id: 'CouponsRedeemed', q: "The coupons are redeemed from the participant's app", w: 0 }
         ]
@@ -481,6 +522,7 @@
         id: 'SensoryScore',
         title: 'Sensory sheet',
         items: [
+          { id: 'BeverageName', q: 'Mention the name of the beverage that is asked to be prepared.', w: 0 },
           { id: 'LatteArtStd', q: 'Was the Latte art created as per TWC std (Cappuccino- Heart , Latte- Tulip/ Rosetta , Flat white - Single dot )', w: 5 },
           { id: 'ShinyGlossy', q: 'Was it shiny and glossy?', w: 3 },
           { id: 'NoBubbles', q: 'No visible bubbles on the surface', w: 3 },
@@ -544,11 +586,11 @@
         // technical
         if (machineType === 'automatic') {
           // for automatic, use grooming and milk sections from SECTIONS
-          const ids = ['GroomingHygiene','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','EndTime'];
+          const ids = ['GroomingHygiene','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','MilkCup3','Cup3Steaming','Cup3Pouring','EndTime'];
           return SECTIONS.filter(s => ids.includes(s.id));
         }
         // manual technical: include espresso dial-in and milk sections
-        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','EndTime'];
+        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','MilkCup3','Cup3Steaming','Cup3Pouring','EndTime'];
         return SECTIONS.filter(s => idsManual.includes(s.id));
       };
   useEffect(()=>{
@@ -739,6 +781,9 @@
               MilkCup2Score: sectionScores.MilkCup2,
               Cup2SteamingScore: sectionScores.Cup2Steaming,
               Cup2PouringScore: sectionScores.Cup2Pouring,
+      MilkCup3Score: sectionScores.MilkCup3,
+      Cup3SteamingScore: sectionScores.Cup3Steaming,
+      Cup3PouringScore: sectionScores.Cup3Pouring,
               EndTimeScore: sectionScores.EndTime,
               dialInTimeTaken,
               milkTimeTaken,
@@ -1090,7 +1135,7 @@ y += 8;
           <div className="topbar" role="banner" style={{padding:'12px 16px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <div className="brand" style={{display:'flex',alignItems:'center',gap:12}}>
               <img src="./brew-league-logo.png" alt="Brew League" className="brand-img" />
-              <div className="brand-title">Score sheet | AM level</div>
+              <div className="brand-title">Score sheet | RM level</div>
             </div>
             <div style={{display:'flex',alignItems:'center',gap:8}}>
               {/* header controls intentionally left empty */}
@@ -1202,7 +1247,7 @@ y += 8;
                         const key = `${sec.id}_${it.id}`;
                         const isTimeField = ['DialInStartTime', 'DialInEndTime', 'StartTime', 'EndTime'].includes(it.id);
                         // ...existing code continues
-                        if (sec.id === 'MilkBasedBeverages' && it.id === 'BeverageName') {
+                        if (it.id === 'BeverageName') {
                           return (
                             <div key={key} className="p-3 bg-white rounded-lg flex items-center gap-3">
                               <div className="flex-1 font-medium">{it.q}</div>
