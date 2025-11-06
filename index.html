@@ -486,59 +486,6 @@
           { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
         ]
       },
-      // Cup-3
-      {
-        id: 'MilkCup3',
-        title: 'Cup-3',
-        items: [
-          { id: 'Cup3PreWarmed', q: 'Is the cup pre-warmed before extraction', w: 2 },
-          { id: 'PortaFilterDry', q: 'Porta filter wiped with dry grey cloth', w: 2 },
-          { id: 'BasketFreeGrounds', q: 'Porta filter basket free from brewed coffee gounds', w: 2 },
-          { id: 'RightBasket', q: 'Right basket porta filter used for intended shot', w: 2 },
-          { id: 'RightGrammage', q: 'Right grammage of ground coffee taken', w: 2 },
-          { id: 'CoffeeLevelled', q: 'Coffee grounds levelled using tap/chop method before tamping', w: 3 },
-          { id: 'TampingMachine', q: 'Tamping machine set as per standard', w: 2 },
-          { id: 'PortaFilterRim', q: 'Porta filter rim wiped to clear loose coffee grounds before inserting into group head', w: 2 },
-          { id: 'FlushGrouphead', q: 'Barista Flushes the grouphead befor insert', w: 3 },
-          { id: 'DripTrayWiped', q: 'Drip tray wiped with the right green cloth after flushing', w: 2 },
-          { id: 'PortaFilterSmooth', q: 'Porta filter inserted into group head smoothly without knocking', w: 3 },
-          { id: 'ExtractionButton', q: 'Right extraction button pressed within 3 seconds of inserting the porta filter', w: 3 },
-          { id: 'FlowEvenly', q: 'Did the espresso flow evenly from both the spouts', w: 3 },
-          { id: 'ShotBrewTime', q: 'Was the shot extracted within the brew time', w: 5 },
-          { id: 'ShotYield', q: 'Was the shot extracted within the  yield  (+/- 1 g )', w: 5 }
-        ]
-      },
-      // Cup-3 Steaming
-      {
-        id: 'Cup3Steaming',
-        title: 'Cup-3 Steaming',
-        items: [
-          { id: 'SteamingExplain', q: 'Is the barista able to explain the milk steaming process', w: 2 },
-          { id: 'SteamingPurged', q: 'Steaming wand is purged before use', w: 3 },
-          { id: 'CleanPitcher', q: 'Is the Barista uses a clean milk pitcher for every order', w: 2 },
-          { id: 'RightPitcher', q: 'Is the barista using the right milk pitcher for the intended beverage size', w: 3 },
-          { id: 'ColdMilk', q: 'In the barista using cold milk  stored in the chiller', w: 3 },
-          { id: 'MilkPouch', q: 'Is the milk pouch stored in the 900ml pitcher', w: 1 },
-          { id: 'RightMilkAmount', q: 'Is the barista taking the right amount of milk for the intended beverage size', w: 3 },
-          { id: 'FoamConsistency', q: 'Is the barista able to create the right consistency of foam for a latte/ Cappuccino/Flat white', w: 3 },
-          { id: 'SteamingWiped', q: 'Steaming wand is  wiped & purged after use', w: 3 },
-          { id: 'GreenClothSteam', q: 'Did the barista use the right green cloth to wipe the steam wand', w: 2 },
-          { id: 'GreenClothStored', q: 'Did the barista store the green cloth in the GN pan after use', w: 1 }
-        ]
-      },
-      // Cup-3 Pouring
-      {
-        id: 'Cup3Pouring',
-        title: 'Cup-3 Pouring',
-        items: [
-          { id: 'TapPitcher', q: 'Does the barista tap the pitcher to remove excess bubbles (if any)', w: 1 },
-          { id: 'SwirlPitcher', q: 'Did the barista swirl the pitcher to ensure the milk and foam is well mixed', w: 1 },
-          { id: 'LatteArt', q: 'Barista able to create latte art in the cup (Cappuccino- Heart , Latte- Tulip/ Rosetta , Flat white - Single dot in the centre)', w: 5 },
-          { id: 'NoSpillage', q: 'No spillage of espresso or milk on the outer part of the cup', w: 2 },
-          { id: 'MilkWastage', q: 'Milk wastage less than 50ml', w: 3 },
-          { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
-        ]
-      },
       // End time and final questions
       {
         id: 'EndTime',
@@ -566,7 +513,7 @@
           { id: 'ArtFacing', q: 'Is the latte art facing the customer with the handle on the right side', w: 5 },
           { id: 'Cover70', q: 'Did the latte art cover 70% of the cup surface', w: 3 },
           { id: 'FrothLevel', q: 'Was the froth level present as per TWC standard (Three Swipes- cappuccino, Two Swipes- Latte & One swipe- Flatwhite)', w: 4 },
-          { id: 'CupImage', q: 'Cup 1,2 & 3- Image (All Together)', w: 0 },
+          { id: 'CupImage', q: 'Cup 1 and 2 - Image (All Together)', w: 0 },
           { id: 'Smile', q: 'Did the barista smile and have an engaging interaction with the judge', w: 3 },
           { id: 'CounterClean', q: 'Did the barista leave the counter clean after finishing his/her performance', w: 3 }
         ]
@@ -621,11 +568,11 @@
         // technical
         if (machineType === 'automatic') {
           // for automatic, use grooming and milk steaming/pouring sections only (no espresso extraction questions)
-          const ids = ['GroomingHygiene','MilkBasedBeverages','Cup1Steaming','Cup1Pouring','Cup2Steaming','Cup2Pouring','Cup3Steaming','Cup3Pouring','EndTime'];
+          const ids = ['GroomingHygiene','MilkBasedBeverages','Cup1Steaming','Cup1Pouring','Cup2Steaming','Cup2Pouring','EndTime'];
           return SECTIONS.filter(s => ids.includes(s.id));
         }
-        // manual technical: include espresso dial-in and milk sections
-        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','MilkCup3','Cup3Steaming','Cup3Pouring','EndTime'];
+        // manual technical: include espresso dial-in and milk sections (Cup-1 and Cup-2 only)
+        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','EndTime'];
         return SECTIONS.filter(s => idsManual.includes(s.id));
       };
   useEffect(()=>{
@@ -816,9 +763,6 @@
               MilkCup2Score: sectionScores.MilkCup2,
               Cup2SteamingScore: sectionScores.Cup2Steaming,
               Cup2PouringScore: sectionScores.Cup2Pouring,
-      MilkCup3Score: sectionScores.MilkCup3,
-      Cup3SteamingScore: sectionScores.Cup3Steaming,
-      Cup3PouringScore: sectionScores.Cup3Pouring,
               EndTimeScore: sectionScores.EndTime,
               dialInTimeTaken,
               milkTimeTaken,
