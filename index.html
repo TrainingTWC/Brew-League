@@ -280,7 +280,7 @@
     // Primary logging endpoints (frontend will POST to all configured endpoints)
     // Note: keep the original endpoint first to preserve existing behavior
     const LOG_ENDPOINTS = [
-      'https://script.google.com/macros/s/AKfycbxyQNTJFO5aZqrIkHfvrLpTylF474frOFq1C6oU0qoyBX2DVNjps-ovVUCEIa9xJj_UTA/exec'
+      'https://script.google.com/macros/s/AKfycbxmQtFUkpEopIMwMGDruDQRbjSpZ5jQZpRudrRuaZYtB93c3hyFSRxnL7Xu4qa1hbybxA/exec'
     ];
     const safeVibrate = pattern => { if(navigator?.vibrate) navigator.vibrate(pattern); };
   const safeLS = { get:k=>{try{return localStorage.getItem(k)}catch{return null}}, set:(k,v)=>{try{localStorage.setItem(k,v)}catch{}}, clear:()=>{try{localStorage.clear()}catch{}} };
@@ -486,6 +486,58 @@
           { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
         ]
       },
+      // Cup-3
+      {
+        id: 'MilkCup3',
+        title: 'Cup-3',
+        items: [
+          { id: 'Cup3PreWarmed', q: 'Is the cup pre-warmed before extraction', w: 2 },
+          { id: 'PortaFilterDry', q: 'Porta filter wiped with dry grey cloth', w: 2 },
+          { id: 'BasketFreeGrounds', q: 'Porta filter basket free from brewed coffee gounds', w: 2 },
+          { id: 'RightBasket', q: 'Right basket porta filter used for intended shot', w: 2 },
+          { id: 'RightGrammage', q: 'Right grammage of ground coffee taken', w: 2 },
+          { id: 'CoffeeLevelled', q: 'Coffee grounds levelled using tap/chop method before tamping', w: 3 },
+          { id: 'TampingMachine', q: 'Tamping machine set as per standard', w: 2 },
+          { id: 'PortaFilterRim', q: 'Porta filter rim wiped to clear loose coffee grounds before inserting into group head', w: 2 },
+          { id: 'FlushGrouphead', q: 'Barista Flushes the grouphead befor insert', w: 3 },
+          { id: 'DripTrayWiped', q: 'Drip tray wiped with the right green cloth after flushing', w: 2 },
+          { id: 'PortaFilterSmooth', q: 'Porta filter inserted into group head smoothly without knocking', w: 3 },
+          { id: 'ExtractionButton', q: 'Right extraction button pressed within 3 seconds of inserting the porta filter', w: 3 },
+          { id: 'FlowEvenly', q: 'Did the espresso flow evenly from both the spouts', w: 3 },
+          { id: 'ShotBrewTime', q: 'Was the shot extracted within the brew time', w: 5 },
+          { id: 'ShotYield', q: 'Was the shot extracted within the  yield  (+/- 1 g )', w: 5 }
+        ]
+      },
+      // Cup-3 Steaming
+      {
+        id: 'Cup3Steaming',
+        title: 'Cup-3 Steaming',
+        items: [
+          { id: 'SteamingPurged', q: 'Steaming wand is purged before use', w: 3 },
+          { id: 'CleanPitcher', q: 'Is the Barista uses a clean milk pitcher for every order', w: 2 },
+          { id: 'RightPitcher', q: 'Is the barista using the right milk pitcher for the intended beverage size', w: 3 },
+          { id: 'ColdMilk', q: 'In the barista using cold milk  stored in the chiller', w: 3 },
+          { id: 'MilkPouch', q: 'Is the milk pouch stored in the 900ml pitcher', w: 1 },
+          { id: 'RightMilkAmount', q: 'Is the barista taking the right amount of milk for the intended beverage size', w: 3 },
+          { id: 'FoamConsistency', q: 'Is the barista able to create the right consistency of foam for a latte/ Cappuccino/Flat white', w: 3 },
+          { id: 'SteamingWiped', q: 'Steaming wand is  wiped & purged after use', w: 3 },
+          { id: 'GreenClothSteam', q: 'Did the barista use the right green cloth to wipe the steam wand', w: 2 },
+          { id: 'GreenClothStored', q: 'Did the barista store the green cloth in the GN pan after use', w: 1 }
+        ]
+      },
+      // Cup-3 Pouring
+      {
+        id: 'Cup3Pouring',
+        title: 'Cup-3 Pouring',
+        items: [
+          { id: 'TapPitcher', q: 'Does the barista tap the pitcher to remove excess bubbles (if any)', w: 1 },
+          { id: 'SwirlPitcher', q: 'Did the barista swirl the pitcher to ensure the milk and foam is well mixed', w: 1 },
+          { id: 'LatteArt', q: 'Barista able to create latte art in the cup (Cappuccino- Heart , Latte- Tulip/ Rosetta , Flat white - Single dot in the centre)', w: 5 },
+          { id: 'NoSpillage', q: 'No spillage of espresso or milk on the outer part of the cup', w: 2 },
+          { id: 'MilkWastage', q: 'Milk wastage less than 50ml', w: 3 },
+          { id: 'CleanPitcherAfter', q: 'Did the barista clean the milk pitcher after use', w: 1 }
+        ]
+      },
       // End time and final questions
       {
         id: 'EndTime',
@@ -513,7 +565,7 @@
           { id: 'ArtFacing', q: 'Is the latte art facing the customer with the handle on the right side', w: 5 },
           { id: 'Cover70', q: 'Did the latte art cover 70% of the cup surface', w: 3 },
           { id: 'FrothLevel', q: 'Was the froth level present as per TWC standard (Three Swipes- cappuccino, Two Swipes- Latte & One swipe- Flatwhite)', w: 4 },
-          { id: 'CupImage', q: 'Cup 1 and 2 - Image (All Together)', w: 0 },
+          { id: 'CupImage', q: 'Cup 1, 2 and 3 - Image (All Together)', w: 0 },
           { id: 'Smile', q: 'Did the barista smile and have an engaging interaction with the judge', w: 3 },
           { id: 'CounterClean', q: 'Did the barista leave the counter clean after finishing his/her performance', w: 3 }
         ]
@@ -737,37 +789,55 @@
         const milkTimeTaken = getTimeDiff(milkStart, milkEnd);
 
         // Logging
-        const data = new URLSearchParams({
+        const logData = {
           participantName,
-              participantEmpID,
-              judgeName,
-              judgeId,
-              scoresheetType,
-              machineType,
-              storeName,
-              storeID,
-              // coffeeMachineName removed
-              totalScore: total,
-              maxScore: max,
-              percent: pct,
-              // Static section scores
-              GroomingHygieneScore: sectionScores.GroomingHygiene,
-              EspressoDialInScore: sectionScores.EspressoDialIn,
-              EspressoDialInShot1Score: sectionScores.EspressoDialInShot1,
-              EspressoDialInShot2Score: sectionScores.EspressoDialInShot2,
-              DialInEndTimeScore: sectionScores.DialInEndTime,
-              MilkBasedBeveragesScore: sectionScores.MilkBasedBeverages,
-              MilkCup1Score: sectionScores.MilkCup1,
-              Cup1SteamingScore: sectionScores.Cup1Steaming,
-              Cup1PouringScore: sectionScores.Cup1Pouring,
-              MilkCup2Score: sectionScores.MilkCup2,
-              Cup2SteamingScore: sectionScores.Cup2Steaming,
-              Cup2PouringScore: sectionScores.Cup2Pouring,
-              EndTimeScore: sectionScores.EndTime,
-              dialInTimeTaken,
-              milkTimeTaken,
-              submissionTime: completion
-        });
+          participantEmpID,
+          judgeName,
+          judgeId,
+          scoresheetType,
+          machineType,
+          storeName,
+          storeID,
+          totalScore: total,
+          maxScore: max,
+          percent: pct,
+          dialInTimeTaken,
+          milkTimeTaken,
+          submissionTime: completion
+        };
+        
+        // Add section scores based on scoresheet type
+        if (scoresheetType === 'sensory') {
+          logData.SensoryScoreScore = sectionScores.SensoryScore || '';
+          // Add individual sensory responses
+          const sensorySection = scoringSections.find(s => s.id === 'SensoryScore');
+          if (sensorySection) {
+            sensorySection.items.forEach(it => {
+              const key = `${sensorySection.id}_${it.id}`;
+              logData[key] = resp[key] || '';
+            });
+          }
+        } else {
+          // Technical section scores
+          logData.GroomingHygieneScore = sectionScores.GroomingHygiene || '';
+          logData.EspressoDialInScore = sectionScores.EspressoDialIn || '';
+          logData.EspressoDialInShot1Score = sectionScores.EspressoDialInShot1 || '';
+          logData.EspressoDialInShot2Score = sectionScores.EspressoDialInShot2 || '';
+          logData.DialInEndTimeScore = sectionScores.DialInEndTime || '';
+          logData.MilkBasedBeveragesScore = sectionScores.MilkBasedBeverages || '';
+          logData.MilkCup1Score = sectionScores.MilkCup1 || '';
+          logData.Cup1SteamingScore = sectionScores.Cup1Steaming || '';
+          logData.Cup1PouringScore = sectionScores.Cup1Pouring || '';
+          logData.MilkCup2Score = sectionScores.MilkCup2 || '';
+          logData.Cup2SteamingScore = sectionScores.Cup2Steaming || '';
+          logData.Cup2PouringScore = sectionScores.Cup2Pouring || '';
+          logData.MilkCup3Score = sectionScores.MilkCup3 || '';
+          logData.Cup3SteamingScore = sectionScores.Cup3Steaming || '';
+          logData.Cup3PouringScore = sectionScores.Cup3Pouring || '';
+          logData.EndTimeScore = sectionScores.EndTime || '';
+        }
+        
+        const data = new URLSearchParams(logData);
         try {
           // Send the same payload to all configured endpoints. Failures are ignored to avoid blocking PDF generation.
           await Promise.all(LOG_ENDPOINTS.map(url => fetch(url, { method: "POST", body: data })));
