@@ -620,11 +620,11 @@
         // technical
         if (machineType === 'automatic') {
           // for automatic, use grooming and milk steaming/pouring sections only (no espresso extraction questions)
-          const ids = ['GroomingHygiene','MilkBasedBeverages','Cup1Steaming','Cup1Pouring','Cup2Steaming','Cup2Pouring','EndTime'];
+          const ids = ['GroomingHygiene','MilkBasedBeverages','Cup1Steaming','Cup1Pouring','Cup2Steaming','Cup2Pouring','Cup3Steaming','Cup3Pouring','EndTime'];
           return SECTIONS.filter(s => ids.includes(s.id));
         }
-        // manual technical: include espresso dial-in and milk sections (Cup-1 and Cup-2 only)
-        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','EndTime'];
+        // manual technical: include espresso dial-in and milk sections (Cup-1, Cup-2, and Cup-3)
+        const idsManual = ['GroomingHygiene','EspressoDialIn','EspressoDialInShot1','EspressoDialInShot2','DialInEndTime','MilkBasedBeverages','MilkCup1','Cup1Steaming','Cup1Pouring','MilkCup2','Cup2Steaming','Cup2Pouring','MilkCup3','Cup3Steaming','Cup3Pouring','EndTime'];
         return SECTIONS.filter(s => idsManual.includes(s.id));
       };
   useEffect(()=>{
